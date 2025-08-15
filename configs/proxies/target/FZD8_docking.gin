@@ -1,3 +1,42 @@
+include 'configs/scent_base.gin'
+
+include 'configs/envs/settings/small.gin'
 include 'configs/proxies/target/docking_base.gin'
 
-DockingMoleculeProxy.receptor_name = 'FZD8'
+DockingMoleculeProxy.receptor_path = '/hpf/projects/mtyers/ningrui/SCENT/data/targets/FZD8.pdbqt'
+DockingMoleculeProxy.center = [-2.121, 34.079, -76.025]
+DockingMoleculeProxy.size = [13.616, 23.107, 17.385]
+DockingMoleculeProxy.norm = 13.0
+
+ReactionEnv.max_num_reactions = 2
+
+### proxy
+prior/gin.singleton.constructor = @QEDProxy
+proxy = @proxy/gin.singleton()
+prior = @prior/gin.singleton()
+target_weight = 1.0
+prior_weight = 1.0
+ComposedProxy.weight_dict = {
+    'target': %target_weight,
+    'prior': %prior_weight,
+}
+ComposedProxy.proxies_dict = {
+    'target': %proxy,
+    'prior': %prior
+}
+ComposedProxy.aggregation = 'prod'
+NumScaffoldsFound.proxy_component_name = 'target'
+TanimotoSimilarityModes.term_name = 'target'
+train_proxy/gin.singleton.constructor = @ComposedProxy
+train_proxy = @train_proxy/gin.singleton()
+valid_proxy = %train_proxy
+### end proxy
+
+TanimotoSimilarityModes.proxy_term_threshold = 8.0
+TanimotoSimilarityModes.similarity_threshold = 0.5
+TanimotoSimilarityModes.max_modes = 5000
+beta = 64
+ScaffoldCostsList.proxy_value_threshold_list = [8]
+
+
+TanimotoSimilarityModes.dump_to_disk = True

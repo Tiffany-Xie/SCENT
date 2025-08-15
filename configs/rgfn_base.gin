@@ -71,6 +71,7 @@ Trainer.valid_every_n_iterations = 100000000
 Trainer.valid_sampler = %valid_sampler
 Trainer.valid_n_trajectories = 1000
 Trainer.valid_batch_size = 320
+Trainer.train_batch_size = 640
 Trainer.objective = %objective
 Trainer.optimizer = @TrajectoryBalanceOptimizer()
 Trainer.lr_scheduler = None
