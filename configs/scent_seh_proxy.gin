@@ -8,3 +8,4 @@ TanimotoSimilarityModes.similarity_threshold = 0.5
 TanimotoSimilarityModes.max_modes = 5000
 beta = 8
 ScaffoldCostsList.proxy_value_threshold_list = [8]
+Trainer.checkpoint_mode = 'best' 

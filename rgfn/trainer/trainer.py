@@ -358,6 +358,8 @@ class Trainer(Generic[TState, TActionSpace, TAction], TrainingHooksMixin):
 
                 self.make_checkpoint(checkpoint_name="last_gfn", metrics=valid_metrics)
                 if self.checkpoint_mode:
+                    # import pdb;pdb.set_trace()
+                    print(f'saving ckpt, mode={self.checkpoint_mode},step = {i}') ### modified
                     if self.metric_direction == "min":
                         is_best = valid_metrics[self.best_metric] < self.best_valid_metrics.get(
                             self.best_metric, float("inf")

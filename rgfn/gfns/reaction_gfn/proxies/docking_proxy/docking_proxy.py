@@ -26,6 +26,7 @@ RECEPTOR_CENTERS = {
     "ClpP": [-38.127, 45.671, -20.898],
     "LRRK2_WD40": [-16.386, -15.911, 7.779],
     "sEH": [-13.4, 26.3, -13.3],
+    "FZD8": [-2.121, 34.079, -76.025] ### modified
 }
 RECEPTOR_BOX_SIZES = {
     "Mpro": [18, 18, 18],
@@ -33,6 +34,7 @@ RECEPTOR_BOX_SIZES = {
     "ClpP": [17, 17, 17],
     "LRRK2_WD40": [25, 25, 25],
     "sEH": [20.013, 16.3, 18.5],
+    "FZD8": [13.616, 23.107, 17.385] ### modified
 }
 RECEPTOR_PATHS = {k: RECEPTOR_ROOT_PATH / f"{k}.pdbqt" for k in RECEPTOR_CENTERS.keys()}
 

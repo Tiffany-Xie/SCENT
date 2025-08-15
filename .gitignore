@@ -167,3 +167,7 @@ ignored/
 # customized
 output/
 experiments/
+boost*/
+boost*
+Vina*/
+myscripts/
