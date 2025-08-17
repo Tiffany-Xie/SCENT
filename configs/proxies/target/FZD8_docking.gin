@@ -5,8 +5,8 @@ include 'configs/proxies/target/docking_base.gin'
 
 DockingMoleculeProxy.receptor_path = '/hpf/projects/mtyers/ningrui/SCENT/data/targets/FZD8.pdbqt'
 DockingMoleculeProxy.center = [-2.121, 34.079, -76.025]
-DockingMoleculeProxy.size = [13.616, 23.107, 17.385]
-DockingMoleculeProxy.norm = 13.0
+DockingMoleculeProxy.size = [13, 19, 20]
+DockingMoleculeProxy.norm = 10
 
 ReactionEnv.max_num_reactions = 2
 
@@ -14,7 +14,7 @@ ReactionEnv.max_num_reactions = 2
 prior/gin.singleton.constructor = @QEDProxy
 proxy = @proxy/gin.singleton()
 prior = @prior/gin.singleton()
-target_weight = 1.0
+target_weight = 3.0
 prior_weight = 1.0
 ComposedProxy.weight_dict = {
     'target': %target_weight,
