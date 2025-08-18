@@ -199,7 +199,16 @@ class DockingMoleculeProxy(CachedProxyBase[ReactionState]):
             score calculation) returns self.failed_score for that molecule.
         """
 
-        scores, docked_pdbqts = self.docking_module_gpu(smiles)
+        tmp = self.docking_module_gpu(smiles) ### modified
+        if tmp is None:
+            n = len(smiles)
+            fail_score = getattr(self, "fail_score", 0.0)
+            scores = np.full(n, fail_score, dtype=float)
+            docked_pdbqts = [None] * 0
+        else:
+            scores, docked_pdbqts = tmp
+            
+        #scores, docked_pdbqts = self.docking_module_gpu(smiles)
 
         if self.n_conformers == 1 or (not scores or not docked_pdbqts):
             return scores, docked_pdbqts

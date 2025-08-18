@@ -10,4 +10,4 @@ include 'configs/policies/scent_cost_guided.gin'
 include 'configs/policies/exploration/exploitation_penalty.gin'
 
 # Comment out to disable Dynamic Library:
-include 'configs/envs/dynamic_library/dynamic_library.gin'
+# include 'configs/envs/dynamic_library/dynamic_library.gin'
