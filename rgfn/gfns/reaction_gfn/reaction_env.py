@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Tuple
 import gin
 from rdkit import RDLogger
 from rdkit.Chem import Mol
+from rdkit import Chem
 
 from rgfn.api.env_base import EnvBase
 from rgfn.api.type_variables import TState
@@ -510,6 +511,84 @@ class ReactionEnv(EnvBase[ReactionState, ReactionActionSpace, ReactionAction]):
         # We were unable to find a fully decomposable fragment pair.
         self.recurrence_cache[(molecule.smiles, n_reactions)] = False
         return False
+
+    
+    ##### Modification
+    def one_step_back(self, mol):
+        '''
+        Yield all valid previous molecule reachable by ONE backward step
+        '''
+
+        for reaction, disconnection in zip(self.reactions, self.disconnections):
+            reactant_tuples = disconnection.rdkit_rxn.RunReactants((mol.rdkit_mol,))
+
+            yielded = set()
+
+            for reactants in reactant_tuples:
+                fragments, nonfragments, _ = self._lazy_is_fragment_check(reactants)
+                if not reactants or len(nonfragments) > 1:
+                    continue
+
+                clean = []
+                for r in reactants:
+                    m = Chem.Mol(r)
+                    m.UpdatePropertyCache(strict=False)
+                    Chem.SanitizeMol(m, catchErrors=True)
+                    clean.append(m)
+                fwd = reaction.rdkit_rxn.RunReactants(tuple(clean))
+
+                made_original = any(
+                    (Molecule(p).valid and Molecule(p) == mol)
+                    for prod_tuple in fwd for p in prod_tuple
+                )
+
+                if not made_original:
+                    continue
+
+                if len(nonfragments) == 1:
+                    nf = nonfragments[0]
+                    prev = nf if isinstance(nf, Molecule) else Molecule(nf)
+
+                    if prev.valid:
+                        smi = prev.smiles
+                        if smi not in yielded:
+                            yielded.add(smi)
+                            yield prev
+                else:
+                    yield None
+
+
+    def _is_decomposable_atleast_k(self, start: Molecule, k: int) -> bool:
+        '''
+        Reture True iff exist a sequence of at least k backward disconnections 
+        starting from smiles; Final leftover after k steps doesn't need to be 
+        a library fragment.
+        '''
+
+        if not start.valid or k <= 0:
+            return False
+        
+        seen = set()
+
+        def dfs(mol: Molecule, steps_left: int) -> bool:
+            key = (mol.smiles, steps_left)
+
+            if key in seen:
+                return False
+            seen.add(key)
+
+            for prev in self.one_step_back(mol):
+                if steps_left == 1:
+                    return True
+                if prev is None:
+                    continue
+                if dfs(prev, steps_left - 1):
+                    return True
+            return False
+        
+        return dfs(start, k)
+
+    #####
 
     def _get_backward_action_spaces_b(
         self, state: ReactionStateB

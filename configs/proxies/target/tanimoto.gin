@@ -1,0 +1,7 @@
+proxy/gin.singleton.constructor = @TanimotoSimilarityProxy
+TanimotoSimilarityProxy.radius = 2
+TanimotoSimilarityProxy.n_bits = 2048
+
+train_proxy = @proxy/gin.singleton()
+valid_proxy = %train_proxy
+
