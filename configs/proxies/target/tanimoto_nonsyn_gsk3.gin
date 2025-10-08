@@ -1,0 +1,14 @@
+include 'configs/scent_base.gin'
+
+include 'configs/envs/settings/small_extended.gin'
+include 'configs/proxies/target/tanimoto.gin'
+
+Trainer.checkpoint_mode = 'best'
+beta = 37
+max_num_reactions = 3
+
+TanimotoSimilarityProxy.reference_mol = "Cn1cc(C2=C(c3ccc4cc5n(c4c3)CCC(CN)C5)C(=O)NC2=O)c2ccccc21"
+
+train_proxy = @proxy/gin.singleton()
+valid_proxy = %train_proxy
+
